@@ -1,0 +1,166 @@
+# umbraco-17-starter-one
+
+Last Updated:
+
+23-11-2025
+
+A Website by .NET 10 and Umbraco 17 CMS serving as a Starter
+
+The Website was upgraded from .NET 8 and Umbraco 13 CMS
+
+# Create a global json
+
+dotnet new globaljson --sdk-version 10.0.100 --force
+
+# Installation
+
+- dotnet new install Umbraco.Templates::17.*
+
+- dotnet new umbraco --name MyProject
+
+- cd MyProject
+
+- dotnet run
+
+- Open https : // localhost:44335 in your Browser and follow the instructions
+
+Note: For install in a specific dir use:
+
+- dotnet new umbraco --output dotnet-10-myproject-umbraco --name MyProject
+
+# Steps for Upgrading the Umbraco CMS from 13 to 17
+
+- Copy the SQLite database with your data from the .NET 8 and Umbraco 13 solution to the new installation
+
+- Copy the MvcUmbraco . csproj and upgrade the package references to .NET 10 and Umbraco 17
+
+- Copy the Program . cs
+
+- Copy the Views and modify to Umbraco 17 needs like remove smidge ...
+
+- Copy the controllers
+
+# Functionality of the Website
+
+- Simple Website with an Umbraco Backend
+
+# Tech used for creating the Website
+
+- .NET 10
+- Umbraco 17 CMS
+- SQLite DB for both Dev + Prod
+- A traditional Webhotel for hosting
+- VS Code
+
+# Development
+
+dotnet run
+
+# Production
+
+Create a self contained build for production at the remote server / traditionel web hotel
+
+dotnet publish myproject.csproj --configuration Release --runtime win-x86 --self-contained
+
+Upload the build to remote server
+
+At my remote servers the web.config needs to be without the folowing:
+
+hostingModel="inprocess"
+
+Upload the SQLite DB to umbraco/Data at the remote server
+
+# Settings for Production
+
+Login to your Umbraco and perform a Health Check under Settings
+
+Open your web.config file at your Web hotel and be aware of the Excessive Headers that:
+
+- Could be revealing information in its headers that gives away unnecessary details about the technology used to build and host
+
+- Add code to web.config which contains:
+
+- httpProtocol - customHeaders - remove - name=X-Powered-By
+
+- security - requestFiltering - RemoveServerHeader=true
+
+Take a look in file Program.cs and the code about security by the HTTP Headers:
+
+- Click-Jacking Protection
+
+- Content / MIME Sniffing Protection
+
+- Cookie hijacking and protocol downgrade attacks Protection
+
+Go to appsettings.json and make sure that your Umbraco Site have the settings:
+
+- Runtime:mode:Production
+
+- Modelsbuilder:Modelmode:Nothing
+
+- Hosting:Debug:false
+
+- WebRouting:UmbracoApplicationUrl:your.domain.com
+
+- UseHTTPS:true
+
+Note: Before deploying to Production Server make sure to remove the Items / code block in csproj file:
+
+- RazorCompileOnBuild
+
+- RazorCompileOnPublish
+
+# Performance => Slow first Page load
+
+- Used Google Page Speed
+
+- Eliminated Render-Blocking
+
+- I optimized the loading CSS and JS in the Master View
+
+- In web.config I added Rewrite Rule to force HTTP request to HTTPS
+
+- In web.config I added applicationInitialization to prevent cold start ( IIS seems to igore it! )
+
+- As a workaround I set up a crone job to make a request every few minutes to prevent cold start
+
+# Custom Error Pages
+
+- 404 Error Page by web.config and Umbraco
+
+- 500 Error Page by web.config and 500.html
+
+- 503 Error Page by web.config and 503.html
+
+# Sync your remote Prod changes to your local Dev
+
+Yor will need to commit the changes from the sqlite-wal file to sqlite.db at the Web Hotel before downloading to local Dev:
+
+- Open web.config and save - This is a work around for stop / start the app pool
+
+- Download the sqlite.db
+
+- Download Views, media files or whatever files that you worked with at Prod
+
+# Models Builder - Configuration - Tips and Tricks
+
+Be sure that the Models for the Document Types are available and Recognized in VS Code:
+
+- Take a look at the settings for ModelsBuilder in appsetting.Development
+
+- Make sure to create the folder: umbraco / models to match the "ModelsDirectory": "~/umbraco/models"
+
+- Make sure you have the setting: "ModelsMode": "SourceCodeManual" for generate the .cs files
+
+- Make a dotnet build and then dotnet run and open the Admin Section of your site which will work even the site will not work before the models will be generated !!!
+
+- Go to the Models Builder in the Admin Section of your site and click: Regenerate Models
+
+- Take a look in the folder: umbraco / models where the .cs files / models were created by VS Code
+
+- Stop your site and make a dotnet run to see your site is running
+
+- Note: The cs files / models must be ignored before Release Build / Production. This must be doing manually in the ItemGroup / compile in the MyProject . csproj !!!
+
+Happy use of Umbraco :-)
+
