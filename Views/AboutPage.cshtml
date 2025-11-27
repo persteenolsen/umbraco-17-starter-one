@@ -1,6 +1,12 @@
 ﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@*@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.AboutPage>*@
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@* The below statement works for .NET 8 and Umbraco 13 *@
+@* 27-11-2025 - The below statement ALSO works for .NET 10 and Umbraco 17 *@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.AboutPage>
+
+@* The below statement works for .NET 10 and Umbraco 17 *@
+@*@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage*@
+
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @{
 	Layout = "Master.cshtml";
